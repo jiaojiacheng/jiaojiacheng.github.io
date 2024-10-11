@@ -20,16 +20,16 @@
     var CONFIG = {"hostname":"jiaojiacheng.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="基于Java 17 整理  知识体系">
+  <meta name="description" content="基于Java 17 整理  知识体系同步IO异步IO">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IO体系">
 <meta property="og:url" content="https://jiaojiacheng.github.io/2024/09/20/IO%E4%BD%93%E7%B3%BB/index.html">
 <meta property="og:site_name" content="Jiaojiacheng&#39;s Blog">
-<meta property="og:description" content="基于Java 17 整理  知识体系">
+<meta property="og:description" content="基于Java 17 整理  知识体系同步IO异步IO">
 <meta property="og:locale">
 <meta property="og:image" content="https://jiaojiacheng.github.io/2024/09/20/IO%E4%BD%93%E7%B3%BB/%E5%90%8C%E6%AD%A5IO.png">
 <meta property="article:published_time" content="2024-09-20T06:06:23.000Z">
-<meta property="article:modified_time" content="2024-09-25T11:30:09.898Z">
+<meta property="article:modified_time" content="2024-09-30T08:45:52.747Z">
 <meta property="article:author" content="Jiaojiacheng">
 <meta property="article:tag" content="Java基础">
 <meta property="article:tag" content="IO">
@@ -200,7 +200,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-09-25 19:30:09" itemprop="dateModified" datetime="2024-09-25T19:30:09+08:00">2024-09-25</time>
+                <time title="Modified: 2024-09-30 16:45:52" itemprop="dateModified" datetime="2024-09-30T16:45:52+08:00">2024-09-30</time>
               </span>
 
           
@@ -217,8 +217,26 @@
         <blockquote>
 <p>基于Java 17 整理</p>
 </blockquote>
-<h1 id="知识体系"><a href="#知识体系" class="headerlink" title="知识体系"></a>知识体系</h1><p><img src="/2024/09/20/IO%E4%BD%93%E7%B3%BB/%E5%90%8C%E6%AD%A5IO.png"></p>
-<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+<h1 id="知识体系"><a href="#知识体系" class="headerlink" title="知识体系"></a>知识体系</h1><p><strong>同步IO</strong><br><img src="/2024/09/20/IO%E4%BD%93%E7%B3%BB/%E5%90%8C%E6%AD%A5IO.png"><br>异步IO</p>
+<span id="more"></span>
+
+<h2 id="NIO概述"><a href="#NIO概述" class="headerlink" title="NIO概述"></a>NIO概述</h2><p>Java NIO（New IO，即非阻塞IO）是从Java 1.4版本开始引入的一套新的IO API，可以替代标准的Java IO<br>API。NIO支持面向缓冲区的（Buffer-oriented）、基于通道的（Channel-based）IO操作。NIO提供了更高的性能，特别是在需要高速读写、大量并发访问IO操作时。</p>
+<h2 id="核心类解析"><a href="#核心类解析" class="headerlink" title="核心类解析"></a>核心类解析</h2><h3 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h3><p>在NIO中，所有数据都是用缓冲区处理的。缓冲区实质上是一个数组。常用的缓冲区有<code>ByteBuffer</code>、<code>CharBuffer</code>、<code>IntBuffer</code>等。</p>
+<h3 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h3><p>通道是双向的，既可以用来进行读操作，也可以用来进行写操作。常见的通道有<code>FileChannel</code>、<code>DatagramChannel</code>、<code>SocketChannel</code><br>和<code>ServerSocketChannel</code>等。</p>
+<h3 id="Selector"><a href="#Selector" class="headerlink" title="Selector"></a>Selector</h3><p>选择器用于使用单个线程处理多个 Channel。如果你的应用打开了多个连接（通道），但每个连接的流量都很低，使用选择器就会非常方便。</p>
+<h2 id="重点源码说明"><a href="#重点源码说明" class="headerlink" title="重点源码说明"></a>重点源码说明</h2><ul>
+<li><code>ByteBuffer</code>的<code>flip()</code>方法：切换读写模式。</li>
+<li><code>Channel</code>的<code>read()</code>和<code>write()</code>方法：从通道读取数据和向通道写入数据。</li>
+<li><code>Selector</code>的<code>select()</code>方法：检查一个或多个通道是否在你注册的事件上有所更新。</li>
+</ul>
+<h2 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h2><h3 id="ByteBuffer使用示例"><a href="#ByteBuffer使用示例" class="headerlink" title="ByteBuffer使用示例"></a>ByteBuffer使用示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ByteBuffer</span> <span class="variable">buffer</span> <span class="operator">=</span> ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">buffer.put((<span class="type">byte</span>) <span class="number">97</span>); <span class="comment">// 写入数据</span></span><br><span class="line">        buffer.flip(); <span class="comment">// 切换模式</span></span><br><span class="line"></span><br><span class="line"><span class="type">byte</span> <span class="variable">b</span> <span class="operator">=</span> buffer.get(); <span class="comment">// 读取数据</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="FileChannel使用示例"><a href="#FileChannel使用示例" class="headerlink" title="FileChannel使用示例"></a>FileChannel使用示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">RandomAccessFile</span> <span class="variable">aFile</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RandomAccessFile</span>(<span class="string">&quot;data/nio-data.txt&quot;</span>, <span class="string">&quot;rw&quot;</span>);</span><br><span class="line"><span class="type">FileChannel</span> <span class="variable">inChannel</span> <span class="operator">=</span> aFile.getChannel();</span><br><span class="line"><span class="type">ByteBuffer</span> <span class="variable">buf</span> <span class="operator">=</span> ByteBuffer.allocate(<span class="number">48</span>);</span><br><span class="line"><span class="type">int</span> <span class="variable">bytesRead</span> <span class="operator">=</span> inChannel.read(buf); <span class="comment">// 读取数据到Buffer</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Selector使用示例"><a href="#Selector使用示例" class="headerlink" title="Selector使用示例"></a>Selector使用示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Selector</span> <span class="variable">selector</span> <span class="operator">=</span> Selector.open();</span><br><span class="line">channel.</span><br><span class="line"></span><br><span class="line">configureBlocking(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="type">SelectionKey</span> <span class="variable">key</span> <span class="operator">=</span> channel.register(selector, SelectionKey.OP_READ);</span><br><span class="line"><span class="keyword">while</span>(selector.</span><br><span class="line"></span><br><span class="line">select() &gt;<span class="number">0</span>)&#123;</span><br><span class="line">Set&lt;SelectionKey&gt; selectedKeys = selector.selectedKeys();</span><br><span class="line">Iterator&lt;SelectionKey&gt; it = selectedKeys.iterator();</span><br><span class="line">    <span class="keyword">while</span>(it.</span><br><span class="line"></span><br><span class="line">hasNext())&#123;</span><br><span class="line"><span class="type">SelectionKey</span> <span class="variable">myKey</span> <span class="operator">=</span> it.next();</span><br><span class="line"><span class="comment">// 处理IO事件</span></span><br><span class="line">    &#125;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>实现一个NettyServer</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> io.netty.bootstrap.ServerBootstrap;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.ChannelFuture;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.EventLoopGroup;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.nio.NioEventLoopGroup;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.nio.NioServerSocketChannel;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NettyServer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">EventLoopGroup</span> <span class="variable">bossGroup</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NioEventLoopGroup</span>();</span><br><span class="line">        <span class="type">EventLoopGroup</span> <span class="variable">workerGroup</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NioEventLoopGroup</span>();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">ServerBootstrap</span> <span class="variable">b</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ServerBootstrap</span>();</span><br><span class="line">            b.group(bossGroup, workerGroup)</span><br><span class="line">                    .channel(workerGroup <span class="keyword">instanceof</span> EpollEventLoopGroup ? EpollServerSocketChannel.class : NioServerSocketChannel.class)</span><br><span class="line">                    .childOption(ChannelOption.TCP_NODELAY, <span class="literal">true</span>)</span><br><span class="line">                    .childOption(ChannelOption.SO_REUSEADDR, <span class="literal">true</span>)</span><br><span class="line">                    .childOption(ChannelOption.SO_KEEPALIVE, <span class="literal">true</span>)</span><br><span class="line">                    .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)</span><br><span class="line">                    .childHandler(<span class="keyword">new</span> <span class="title class_">ChannelInitializer</span>&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                            ch.pipeline()</span><br><span class="line">                                    .addLast(<span class="string">&quot;decoder&quot;</span>, <span class="keyword">new</span> <span class="title class_">HttpRequestDecoder</span>())</span><br><span class="line">                                    .addLast(<span class="string">&quot;encoder&quot;</span>, <span class="keyword">new</span> <span class="title class_">HttpResponseEncoder</span>())</span><br><span class="line">                                    .addLast(<span class="string">&quot;handler&quot;</span>, <span class="keyword">new</span> <span class="title class_">NettyHttpServerHandler</span>(httpHandler, httpServer));</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;).option(ChannelOption.SO_BACKLOG, <span class="number">128</span>);</span><br><span class="line"></span><br><span class="line">            <span class="type">ChannelFuture</span> <span class="variable">f</span> <span class="operator">=</span> b.bind(<span class="number">8080</span>).sync();</span><br><span class="line">            f.channel().closeFuture().sync();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            bossGroup.shutdownGracefully();</span><br><span class="line">            workerGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
     </div>
 
     
@@ -236,6 +254,13 @@
 
 
         
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2024/09/25/2024%E5%B9%B4%E8%A7%84%E5%88%92/" rel="next" title="2024年规划">
+      2024年规划 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
       </footer>
     
   </article>
@@ -293,7 +318,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB"><span class="nav-number">1.</span> <span class="nav-text">知识体系</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB"><span class="nav-number">1.</span> <span class="nav-text">知识体系</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">NIO概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E7%B1%BB%E8%A7%A3%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">核心类解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer"><span class="nav-number">1.2.1.</span> <span class="nav-text">Buffer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Channel"><span class="nav-number">1.2.2.</span> <span class="nav-text">Channel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Selector"><span class="nav-number">1.2.3.</span> <span class="nav-text">Selector</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E7%82%B9%E6%BA%90%E7%A0%81%E8%AF%B4%E6%98%8E"><span class="nav-number">1.3.</span> <span class="nav-text">重点源码说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="nav-number">1.4.</span> <span class="nav-text">使用说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ByteBuffer%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.4.1.</span> <span class="nav-text">ByteBuffer使用示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FileChannel%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.4.2.</span> <span class="nav-text">FileChannel使用示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Selector%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.4.3.</span> <span class="nav-text">Selector使用示例</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -309,14 +334,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
